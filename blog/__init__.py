@@ -1,0 +1,37 @@
+#!/usr/bin/python3
+# -*- coding:utf-8 -*-
+# @Time    : 2019/7/17 11:23
+# @Author  : icon
+# @File    : __init__.py.py
+# import time
+# blogs = [
+#     {"id": "1", "title": "文章1", "create_time": int(time.time())+1, "author": "tom", "content": "文章内容"},
+#     {"id": "2", "title": "文章2", "create_time": int(time.time())+2, "author": "tom", "content": "文章内容"},
+#     {"id": "3", "title": "文章3", "create_time": int(time.time())+3, "author": "tom", "content": "文章内容"},
+# ]
+# blogs=sorted(blogs, key=lambda lis: lis["create_time"], reverse=True)[:2]
+# print(blogs)
+# with open('blogs.txt', 'r+', encoding='utf-8') as f:
+#     con = f.read()
+# print(con)
+# con = eval(con)
+# print(con)
+
+# from _datetime import datetime
+# import time
+# t = datetime.fromtimestamp(int(time.time()))
+# print(dict(t=str(t)))
+# from flask import Flask, session, g, current_app, request
+#
+# app = Flask(__name__)
+# ctx = app.app_context()
+# ctx.push()
+# rctx = app.test_request_context()
+# rctx.push()
+# print(g)
+# print(current_app)
+# print(session)
+# print(request)
+from werkzeug.local import Local
+
+Local

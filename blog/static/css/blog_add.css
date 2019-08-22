@@ -1,0 +1,8 @@
+#post {
+    width: 900px;
+    padding-top: 80px;
+}
+#content, #author, #title, #submit{
+    margin: 10px auto;
+
+}

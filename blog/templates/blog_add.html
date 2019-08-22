@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}首页{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/blog_add.css' ) }}">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+    body{
+            background-color: #9c9c9c30;
+        }
+    </style>
+{% endblock style %}
+
+{% block script %}
+{#    {{ ckeditor.load_code_theme() }}#}
+{% endblock %}
+
+{% block content %}
+    {% include '_navbar.html' %}
+    <form action="/blog/add" method="POST" id="post">
+        {{ form.hidden_tag() }}
+        {#        {% from "macros.html" import form_field %}#}
+        {#            <div class="title">{{ form_field(form.title) }}</div>#}
+        {#            <div class="author">{{ form_field(form.author) }}</div>#}
+        {#            <div class="content">{{ form_field(form.content) }}</div>#}
+        {#            <div class="submit">{{ form.submit() }}</div>#}
+        {{ form.title.label() }}
+        {{ form.title() }}
+        {{ form.author.label() }}
+        {{ form.author() }}
+        {% for msg in form.author.errors %}
+            <div class="error" style="color: red">{{ msg }}</div>
+        {% endfor %}
+
+        {{ form.content.label() }}
+        {{ form.content() }}
+        {% for msg in form.content.errors %}
+            <div class="error" style="color: red">{{ msg }}</div>
+        {% endfor %}
+
+        {{ form.submit() }}
+        {#        <input class="form-control form-control-lg" type="text" placeholder=".form-control-lg">#}
+        {#        <label for="title">请输入文章标题：</label>#}
+        {#        <input type="text" name="title" id="title" class="form-control form-control-lg"><br>#}
+        {#        <label for="author">请输入文章作者：</label>#}
+        {#        <input type="text" name="author" id="author" class="form-control form-control-lg"><br>#}
+        {#        <label for="content">请输入文章内容：</label>#}
+        {#        <textarea name="content" id="content" class="form-control"  rows="3" cols="50"></textarea><br>#}
+        {#        {% for msg in get_flashed_messages() %}#}
+        {#        <div>{{ msg }}</div><br>#}
+        {#        {% endfor %}#}
+        {#        <input type="submit" value="发布">#}
+    </form>
+{% endblock %}
+{% block endscript %}
+    {{ ckeditor.load() }}
+    {{ ckeditor.config(name='content') }}
+    <script src="{{ url_for('static', filename='js/jquery-1.12.4.min.js') }}"></script>
+    <script>
+        var post = $('#post');
+        var post_width = post.width();
+        var bodyWidth = $(document.body).width();
+        console.log(post_width, bodyWidth);
+        post.css('margin-left', (bodyWidth - post_width) / 2);
+    </script>
+{% endblock %}
