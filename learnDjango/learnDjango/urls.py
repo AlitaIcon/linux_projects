@@ -1,4 +1,4 @@
-"""learnDjango URL Configuration
+﻿"""learnDjango URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.2/topics/http/urls/
@@ -50,5 +50,5 @@ urlpatterns = [
     path('api/', include('rest_framework.urls'))
 ]
 
-# from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-# urlpatterns += staticfiles_urlpatterns()
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+urlpatterns += staticfiles_urlpatterns()
