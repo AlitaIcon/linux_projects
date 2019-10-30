@@ -6,10 +6,11 @@ from projects.models import Projects
 
 
 class Interface(models.Model):
-    name = models.CharField(verbose_name='接口名称', max_length=200, help_text='接口名称')
+    name = models.CharField(verbose_name='接口名称', max_length=200, help_text='接口名称', db_column='I_NAME')
     url = models.CharField(verbose_name='接口地址', max_length=100, unique=True, help_text='接口地址')
     data = models.CharField(verbose_name='参数', max_length=100, help_text='接口参数', null=True, blank=True)
-    projects = models.ForeignKey(Projects, on_delete=models.CASCADE, verbose_name='所属项目', help_text='所属项目')
+    projects = models.ForeignKey(Projects, on_delete=models.CASCADE, verbose_name='所属项目',
+                                 help_text='所属项目', related_name='_interfaces')
 
     class Meta:
         ordering = ['name']

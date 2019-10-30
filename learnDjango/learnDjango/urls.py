@@ -1,4 +1,4 @@
-﻿"""learnDjango URL Configuration
+"""learnDjango URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.2/topics/http/urls/
@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework.documentation import include_docs_urls
+from rest_framework_jwt.views import obtain_jwt_token
 
 from projects.views import index
 # from rest_framework import permissions
@@ -44,11 +45,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('index/', index),
     # path('projects/', include('projects.urls')),
+    path('', include('users.urls')),
     path('', include('projects.urls')),
     # path('interfaces/', include('interfaces.urls')),
     path('', include('interfaces.urls')),
-    path('api/', include('rest_framework.urls'))
+    path('api/', include('rest_framework.urls')),
+    path('users/', include('users.urls')),
 ]
 
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-urlpatterns += staticfiles_urlpatterns()
+# from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+# urlpatterns += staticfiles_urlpatterns()

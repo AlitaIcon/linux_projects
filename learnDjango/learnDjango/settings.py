@@ -9,9 +9,10 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+import datetime
 import os
 from os import environ
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'ny3c^@mv-y2%y#9ee@g)lw+2sl13$y1i=hpbk(=vp=g!gr^_k^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = True
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
 
     'projects.apps.ProjectsConfig',
     'interfaces.apps.InterfacesConfig',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -98,7 +100,28 @@ REST_FRAMEWORK = {
     # 同时必须制定每页显示的条数
     # 'PAGE_SIZE': 3,
 
+    # 指定api渲染引擎
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+
+    # 配置默认的认证方式 base:账号密码验证
+    # session：session_id认证
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # drf的这一阶段主要是做验证,middleware的auth主要是设置session和user到request对象
+        # 默认的验证是按照验证列表从上到下的验证
+        "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'NON_FIELD_ERRORS_KEY': 'error_msg',  # 自定义异常key值
+}
+
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    'JWT_AUTH_HEADER_PREFIX': 'B',
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'utils.jwt_response_payload_handler.jwt_response_payload_handler',
 }
 
 WSGI_APPLICATION = 'learnDjango.wsgi.application'
@@ -114,11 +137,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'my_django',
-        'HOST': 'db',
-        # 'HOST': '49.235.177.249',
         'USER': 'root',
         'PASSWORD': '123456',
-        'PORT': '3838'
+        'HOST': '49.235.177.249',
+        'PORT': '3838',
+        # 'HOST': 'db',
+        # 'PORT': '3306',
     }
 }
 
@@ -181,7 +205,6 @@ LOGGING = {
         },
     }
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

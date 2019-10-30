@@ -23,7 +23,8 @@ class ProjectModelSerializer(serializers.ModelSerializer):
                                      'min_length': '长度不小于6字节',
                                  })
 
-    interface_set = serializers.StringRelatedField(many=True)
+    # interface_set = serializers.StringRelatedField(many=True)
+    _interfaces = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Projects
@@ -62,10 +63,10 @@ from interfaces.serializer import InterfaceNameSerializer
 
 
 class InterfaceByProjectsIdSerializer(serializers.ModelSerializer):
-    interface_set = InterfaceNameSerializer(read_only=True, many=True)
+    _interfaces = InterfaceNameSerializer(read_only=True, many=True)
 
     class Meta:
         model = Projects
-        fields = ['name', 'interface_set']
+        fields = ['name', 'leader', '_interfaces']
 
 

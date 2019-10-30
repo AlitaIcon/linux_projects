@@ -6,6 +6,7 @@ from django.http import HttpResponse, JsonResponse
 
 # Create your views here.
 from django.views import View
+from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -100,6 +101,7 @@ class ProjectsViewSet(ModelViewSet):
     serializer_class = ProjectModelSerializer
     ordering_fields = ['name']
     filterset_fields = ['id', 'name']
+    permission_classes = [permissions.IsAuthenticated]
 
     @action(methods=['get'], detail=True, url_path='interfaces')  # detail=True，那么路由前面会有id
     def interfaces(self, request, *args, **kwargs):
