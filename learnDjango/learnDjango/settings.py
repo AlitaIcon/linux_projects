@@ -12,9 +12,10 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import datetime
 import os
 from os import environ
-
+import sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(BASE_DIR, "apps"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -25,9 +26,9 @@ SECRET_KEY = 'ny3c^@mv-y2%y#9ee@g)lw+2sl13$y1i=hpbk(=vp=g!gr^_k^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = True
-
+CORS_ALLOW_CREDENTIALS = True  # 允许跨域携带Cookie，默认为False
+# ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,18 +48,23 @@ INSTALLED_APPS = [
     'projects.apps.ProjectsConfig',
     'interfaces.apps.InterfacesConfig',
     'users.apps.UsersConfig',
+    'configures.apps.ConfiguresConfig',
+    'debugtalks.apps.DebugtalksConfig',
+    'envs.apps.EnvsConfig',
+    'reports.apps.ReportsConfig',
+    'testcases.apps.TestcasesConfig',
+    'testsuites.apps.TestsuitesConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'corsheaders.middleware.CorsMiddleware',
     # 'corsheaders.middleware.CorsPostCsrfMiddleware',
 ]
 
@@ -115,7 +121,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
-    'NON_FIELD_ERRORS_KEY': 'error_msg',  # 自定义异常key值
+    # 'NON_FIELD_ERRORS_KEY': 'error_msg',  # 自定义异常key值
 }
 
 JWT_AUTH = {
@@ -123,7 +129,7 @@ JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'B',
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'utils.jwt_response_payload_handler.jwt_response_payload_handler',
 }
-
+AUTH_USER_MODEL = 'users.MyUser'
 WSGI_APPLICATION = 'learnDjango.wsgi.application'
 
 # Database
@@ -136,13 +142,12 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'my_django',
+        'NAME': 'httprunner',
+        # 'HOST': 'db',
+        'HOST': '49.235.177.249',
         'USER': 'root',
         'PASSWORD': '123456',
-        'HOST': '49.235.177.249',
-        'PORT': '3838',
-        # 'HOST': 'db',
-        # 'PORT': '3306',
+        'PORT': '3838'
     }
 }
 
@@ -220,10 +225,15 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+# 配置 MEDIA_ROOT 作为你上传文件在服务器中的基本路径
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')  # 注意此处不要写成列表或元组的形式
+# 配置 MEDIA_URL 作为公用 URL，指向上传文件的基本路径
+MEDIA_URL = '/media/'

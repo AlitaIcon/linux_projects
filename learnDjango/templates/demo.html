@@ -5,12 +5,48 @@
     <title>Title</title>
 </head>
 <body>
-    <h1>hello</h1>
-    <p>templates:</p>
+<h1>hello</h1>
+<p>templates:</p>
 {#    {% for project in datas %}#}
 {#        <ol>#}
 {#        <li>{{ project.name }}</li>#}
 {#        </ol>#}
 {#    {% endfor %}#}
+
+<p>username:<input type="text" name="username" id="username"></p>
+<p>password:<input type="password" name="password" id="password"></p>
+<input type="submit" value="登录" id="login">
+
+{#TODO:提交请求必须增加header:{"Authorization": localStorage.getItem("token")}#}
+<form method="POST" enctype="multipart/form-data" action="http://127.0.0.1:8000/user/upload/avatar/admin666/">
+    {% csrf_token %}
+    <input type="file" name="img">
+    <button type="submit" id="sub">上传</button>
+</form>
 </body>
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+<script>
+    $("#login").click(function () {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        console.log(username);
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:8000/user/login/",
+            dataType: "json",
+
+            data: {
+                "username": username,
+                "password": password
+            },
+            success: function (response) {
+                console.log(response);
+                sessionStorage.token = response.token;
+                sessionStorage.username = response.username;
+            }
+        })
+    });
+
+
+</script>
 </html>

@@ -13,15 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework.documentation import include_docs_urls
 from rest_framework_jwt.views import obtain_jwt_token
 
-from projects.views import index
 # from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from django.conf import settings
+from django.views.static import serve
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -36,6 +38,7 @@ schema_view = get_schema_view(
     # permission_classes=(permissions.AllowAny,),   # 权限类
 )
 
+# noinspection PyUnresolvedReferences
 urlpatterns = [
     path('docs/', include_docs_urls('测试平台接口文档', description='my_test')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
@@ -43,15 +46,17 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
     path('admin/', admin.site.urls),
+    # re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+
     # path('index/', index),
     # path('projects/', include('projects.urls')),
-    path('', include('users.urls')),
     path('', include('projects.urls')),
     # path('interfaces/', include('interfaces.urls')),
     path('', include('interfaces.urls')),
     path('api/', include('rest_framework.urls')),
-    path('users/', include('users.urls')),
+    path('user/', include('users.urls')),
 ]
 
-# from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 # urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
