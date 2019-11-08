@@ -9,7 +9,8 @@ from rest_framework.viewsets import ModelViewSet
 from interfaces.models import Interfaces
 from interfaces.serializer import InterfaceInfoSerializer
 from projects.models import Projects
-from projects.serializer import ProjectModelSerializer
+from projects.serializer import ProjectModelSerializer, ProjectNameSerializer
+from projects.utils import get_count_by_project
 
 
 class ProjectsViewSet(ModelViewSet):
@@ -46,7 +47,7 @@ class ProjectsViewSet(ModelViewSet):
 
     @action(methods=['get'], detail=True, url_path='interfaces')
     def interfaces(self, request, pk=None):
-        interface_models = Interfaces.objects.filter(project_id=pk, is_deleted=False)
+        interface_models = Interfaces.objects.filter(project_id=pk, is_delete=False)
         one_list = []
         for obj in interface_models:
             one_list.append({
@@ -59,27 +60,21 @@ class ProjectsViewSet(ModelViewSet):
         instance.is_delete = True
         instance.save()
 
-    @action(methods=['get'], detail=True)
-    def interface_info(self, request, *args, **kwargs):
-        project_model = self.get_object()
-        # serializer = self.get_serializer(instance=project_model, many=True)
-        # return Response(serializer.data.get("interfaces"))
-        interfaces_name = self.get_serializer(instance=project_model).data.get("interfaces")
-        interface_model = Interfaces.objects.filter(name__in=interfaces_name)
-        serializer = InterfaceInfoSerializer(instance=interface_model, many=True)
+    @action(methods=['get'], detail=False)
+    def names(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = ProjectNameSerializer(instance=queryset, many=True)
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
         page = self.paginate_queryset(queryset)
-        # if page is not None:
-        #     serializer = self.get_serializer(page, many=True)
-        #     datas = serializer.data
-
-        #     return self.get_paginated_response(datas)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            data = get_count_by_project(serializer.data)
+            return self.get_paginated_response(data)
 
         serializer = self.get_serializer(queryset, many=True)
-
-        datas = serializer.data
-        return Response(datas)
+        data = get_count_by_project(serializer.data)
+        return Response(data)

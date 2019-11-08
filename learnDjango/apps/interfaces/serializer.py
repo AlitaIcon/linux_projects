@@ -9,11 +9,10 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from interfaces.models import Interfaces
-from projects.serializer import ProjectModelSerializer
 
 
 class InterfaceModelSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(label='接口名称', max_length=200, min_length=6, help_text='接口名称', write_only=True,
+    name = serializers.CharField(label='接口名称', max_length=200, min_length=6, help_text='接口名称',
                                  # validators中的验证器会全部执行，如果抛异常，则不执行单字段验证器和联合字段验证器
                                  validators=[UniqueValidator(queryset=Interfaces.objects.all(),
                                                              message='接口名称不可重复')],
@@ -21,20 +20,29 @@ class InterfaceModelSerializer(serializers.ModelSerializer):
                                      'max_length': '长度不超过200字节',
                                      'min_length': '长度不小于6字节',
                                  })
-    projects = ProjectModelSerializer(label='所属项目')
+    # project_id = serializers.PrimaryKeyRelatedField(label="Project ID", queryset=Interfaces.objects.all())
 
     class Meta:
         model = Interfaces
         fields = "__all__"
-        extra_kwargs = {
-            'url': {'write_only': True, 'error_messages': {'max_length': '长度不超过200字节', 'min_length': '长度不小于20字节'}}
-        }
+
+    # def create(self, validated_data):
+    #     pass
 
 
 class InterfaceInfoSerializer(serializers.ModelSerializer):
+    configures = serializers.StringRelatedField(many=True, read_only=True)
+    testcases = serializers.StringRelatedField(many=True, read_only=True)
+
     class Meta:
         model = Interfaces
         fields = "__all__"
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret['configures_len'] = len(ret['configures'])
+        ret['testcases_len'] = len(ret['testcases'])
+        return ret
 
 
 class InterfaceNameSerializer(serializers.ModelSerializer):

@@ -51,8 +51,8 @@ urlpatterns = [
     # path('index/', index),
     # path('projects/', include('projects.urls')),
     path('', include('projects.urls')),
-    # path('interfaces/', include('interfaces.urls')),
     path('', include('interfaces.urls')),
+    path('', include('testcases.urls')),
     path('api/', include('rest_framework.urls')),
     path('user/', include('users.urls')),
 ]

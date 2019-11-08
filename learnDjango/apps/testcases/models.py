@@ -6,7 +6,7 @@ from utils.model_tools import BaseModel
 
 class TestCases(BaseModel):
     name = models.CharField('用例名称', max_length=50, unique=True, help_text='用例名称')
-    interface = models.ForeignKey('interfaces.Interfaces', on_delete=models.CASCADE,
+    interface = models.ForeignKey('interfaces.Interfaces', on_delete=models.CASCADE,related_name='testcases',
                                   help_text='所属接口')
     # include = models.ForeignKey('', on_delete=models.SET_NULL, null=True, related_name='testcases')
     include = models.TextField('前置', null=True, help_text='用例执行前置顺序')

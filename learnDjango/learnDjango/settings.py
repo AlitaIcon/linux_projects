@@ -104,7 +104,7 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_PAGINATION_CLASS': 'utils.pagination.PageNumberPaginationManual',
     # 同时必须制定每页显示的条数
-    # 'PAGE_SIZE': 3,
+    'PAGE_SIZE': 10,
 
     # 指定api渲染引擎
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
@@ -122,11 +122,12 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
     # 'NON_FIELD_ERRORS_KEY': 'error_msg',  # 自定义异常key值
+    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S'
 }
 
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
-    'JWT_AUTH_HEADER_PREFIX': 'B',
+    # 'JWT_AUTH_HEADER_PREFIX': 'B',
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'utils.jwt_response_payload_handler.jwt_response_payload_handler',
 }
 AUTH_USER_MODEL = 'users.MyUser'
@@ -222,10 +223,10 @@ LANGUAGE_CODE = 'zh-hans'
 TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
-
-USE_L10N = True
-
 USE_TZ = False
+
+USE_L10N = False
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
