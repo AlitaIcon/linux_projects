@@ -21,7 +21,7 @@ class ProjectModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Projects
         exclude = ("is_delete", "update_time")
-        read_only_fields = ('created_time',)
+        read_only_fields = ('create_time',)
         ordering = ("id", "name")
         extra_kwargs = {
             'name': {'label': '项目名称', 'max_length': 50, 'help_text': '项目名称', 'validators': [

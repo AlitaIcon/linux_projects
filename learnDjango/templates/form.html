@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Form Page</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="jquery.form.js"></script>
+</head>
+<body>
+<h1>文件上传</h1>
+    <h2>ajax上传</h2>
+     
+<form id="uploadForm">  
+              <p>上传文件： <input type="file" name="file" id="file"/></ p>         
+              <input type="button" value="上传" οnclick="submitImport()"/>
+               <p id="location">文件位置：</p>
+         
+</form>
+    
+</body>
+
+<script>
+    function submitImport() {
+        $('#uploadForm').ajaxSubmit({
+            type: 'post', // 提交方式 get/post
+            url: 'http://127.0.0.1:8000/user/upload/avatar/', // 需要提交的 url
+            success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                // 此处可对 data 作相关处理
+                $("#location").append("<p>" + data + "</p>");
+            }
+        });
+        return false; // 阻止表单自动提交事件
+    }
+</script>
+</html>

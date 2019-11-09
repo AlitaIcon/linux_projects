@@ -3,12 +3,12 @@
 # @Time    : 2019/10/12 13:03
 # @Author  : icon
 # @File    : urls.py
+
 from rest_framework.routers import DefaultRouter
-from interfaces import views
+from configures import views
 
 router = DefaultRouter()
-router.register(r'interfaces', views.InterfaceViewSet, basename='interfaces')
-urlpatterns = [
-    # path(r'', include(router.urls)),
-]
+
+router.register(r'configures', views.ConfiguresViewSet, basename='configures')
+urlpatterns = []
 urlpatterns += router.urls

@@ -4,10 +4,10 @@
 # @Author  : icon
 # @File    : urls.py
 from rest_framework.routers import DefaultRouter
-from interfaces import views
+from debugtalks import views
 
 router = DefaultRouter()
-router.register(r'interfaces', views.InterfaceViewSet, basename='interfaces')
+router.register(r'debugtalks', views.DebugtalksViewSet, basename='debugtalks')
 urlpatterns = [
     # path(r'', include(router.urls)),
 ]

@@ -17,11 +17,13 @@
 <p>password:<input type="password" name="password" id="password"></p>
 <input type="submit" value="登录" id="login">
 
-{#TODO:提交请求必须增加header:{"Authorization": localStorage.getItem("token")}#}
-<form method="POST" enctype="multipart/form-data" action="http://127.0.0.1:8000/user/upload/avatar/admin666/">
+{#TODO:提交请求必须增加header:{"Authorization": localStorage.getItem("token")} #}
+{#https://blog.csdn.net/qq_33437430/article/details/78783620#}
+action="http://127.0.0.1:8000/user/upload/avatar/admin666/"
+<form method="POST" enctype="multipart/form-data" id="uploadForm">
     {% csrf_token %}
     <input type="file" name="img">
-    <button type="submit" id="sub">上传</button>
+    <button type="submit" id="sub" onclick="submitImport()">上传</button>
 </form>
 </body>
 <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
@@ -47,6 +49,19 @@
         })
     });
 
+    function submitImport() {
+        $('#uploadForm').ajaxSubmit({
+            type: 'post', // 提交方式 get/post
+            url: 'http://127.0.0.1:8000/user/upload/avatar/', // 需要提交的 url
+            headers: {"Authorization": localStorage.getItem("token")},
+            success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                // 此处可对 data 作相关处理
+
+                console.log(data)
+            }
+        });
+        return false; // 阻止表单自动提交事件
+    };
 
 </script>
 </html>

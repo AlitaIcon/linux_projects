@@ -9,6 +9,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from interfaces.models import Interfaces
+from projects.models import Projects
 
 
 class InterfaceModelSerializer(serializers.ModelSerializer):
@@ -20,14 +21,26 @@ class InterfaceModelSerializer(serializers.ModelSerializer):
                                      'max_length': '长度不超过200字节',
                                      'min_length': '长度不小于6字节',
                                  })
-    # project_id = serializers.PrimaryKeyRelatedField(label="Project ID", queryset=Interfaces.objects.all())
+    project_id = serializers.PrimaryKeyRelatedField(label="Project ID", queryset=Projects.objects.all())
+    project = serializers.StringRelatedField(label='所属项目')
 
     class Meta:
         model = Interfaces
-        fields = "__all__"
+        # fields = "__all__"
+        fields = ("id", "project", "project_id", "name", "tester", "desc", "create_time")
+        # exclude = ("is_delete", "update_time")
+        read_only_fields = ("create_time",)
 
-    # def create(self, validated_data):
-    #     pass
+    def create(self, validated_data):
+        project = validated_data.pop("project_id")
+        validated_data["project"] = project
+        return Interfaces.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        if 'project_id' in validated_data:
+            project = validated_data.pop("project_id")
+            validated_data["project"] = project
+        return super().update(instance, validated_data)
 
 
 class InterfaceInfoSerializer(serializers.ModelSerializer):

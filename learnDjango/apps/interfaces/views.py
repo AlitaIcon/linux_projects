@@ -1,8 +1,5 @@
-import json
-
-from django.http import JsonResponse, Http404
 # Create your views here.
-from django.views import View
+
 from rest_framework.decorators import action
 
 from rest_framework.viewsets import ModelViewSet
@@ -12,20 +9,8 @@ from configures.models import Configures
 from interfaces.models import Interfaces
 from interfaces.serializer import InterfaceModelSerializer, InterfaceNameSerializer
 
-
-# ViewSet未提供get_object() get_serializer() queryset serializer_class
-# 所以要继承GenericViewSet
-# class InterfaceViewSet(mixins.CreateModelMixin,
-#                         mixins.RetrieveModelMixin,
-#                         mixins.UpdateModelMixin,
-#                         mixins.DestroyModelMixin,
-#                         mixins.ListModelMixin,
-#                         viewsets.GenericViewSet):
-#     queryset = Interface.objects.all()  # 指定查询集
-#     serializer_class = InterfaceModelSerializer
-#     # ordering_fields = ['name']  # 可指定多字段排序
-#     filterset_fields = ['id', 'name']  # 指定需要过滤的字段
 from interfaces.utils import get_count_by_project
+from projects.serializer import ProjectNameSerializer
 from testcases.models import TestCases
 
 
@@ -57,14 +42,10 @@ class InterfaceViewSet(ModelViewSet):
     ordering_fields = ['name']
     filterset_fields = ['id', 'name']
 
-    # 使用action装饰器来声明自定义动作
-    # 默认情况下，实例方法是动作名
-    # method默认为get，指定方法的请求方法
-    # detail参数指定该动作处理的是否为详情资源对象（url是否需要传递pk键值）
     @action(methods=['get'], detail=False)
     def names(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = InterfaceNameSerializer(instance=queryset, many=True)
+        serializer = self.get_serializer(instance=queryset, many=True)
         return Response(serializer.data)
 
     @action(methods=['get'], detail=True, url_path='configs')
@@ -91,18 +72,15 @@ class InterfaceViewSet(ModelViewSet):
         return Response(data=one_list)
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            data = get_count_by_project(serializer.data)
-            return self.get_paginated_response(data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        data = get_count_by_project(serializer.data)
-        return Response(data)
+        res = super().list(request, *args, **kwargs)
+        res.data["results"] = get_count_by_project(res.data.get("results"))
+        return res
 
     def perform_destroy(self, instance):
         instance.is_delete = True
         instance.save()
+
+    def get_serializer_class(self):
+        if self.action == "names":
+            return ProjectNameSerializer
+        return self.serializer_class

@@ -56,7 +56,7 @@ class TestCasesViewSet(ModelViewSet):
         data = serializer.data
         interface_id = serializer.data.get("interface")
         selected_project_id = Interfaces.objects.get(id=interface_id, is_delete=False).project_id
-        data['selected_project_id'] = selected_project_id.id
+        data['selected_project_id'] = selected_project_id
         data['selected_interface_id'] = interface_id
         data['selected_testcase_id'] = int(kwargs.get("pk"))
         data['selected_configure_id'] = Interfaces.objects.get(id=interface_id).configures.instance.id

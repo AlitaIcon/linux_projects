@@ -63,18 +63,15 @@ class ProjectsViewSet(ModelViewSet):
     @action(methods=['get'], detail=False)
     def names(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = ProjectNameSerializer(instance=queryset, many=True)
+        serializer = self.get_serializer(instance=queryset, many=True)
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        res = super().list(request, *args, **kwargs)
+        res.data["results"] = get_count_by_project(res.data.get("results"))
+        return res
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            data = get_count_by_project(serializer.data)
-            return self.get_paginated_response(data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        data = get_count_by_project(serializer.data)
-        return Response(data)
+    def get_serializer_class(self):
+        if self.action == "names":
+            return ProjectNameSerializer
+        return self.serializer_class

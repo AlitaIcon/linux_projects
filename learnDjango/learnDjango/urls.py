@@ -27,8 +27,8 @@ from django.views.static import serve
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="API接口文档平台",    # 必传
-        default_version='v1',   # 必传
+        title="API接口文档平台",  # 必传
+        default_version='v1',  # 必传
         description="这是一个美轮美奂的接口文档",
         terms_of_service="http://api.alitaicon.site",
         contact=openapi.Contact(email="icon@qq.com"),
@@ -44,19 +44,22 @@ urlpatterns = [
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-
+    path('api/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
     # re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 
-    # path('index/', index),
-    # path('projects/', include('projects.urls')),
+    path('user/', include('users.urls')),
     path('', include('projects.urls')),
     path('', include('interfaces.urls')),
+    path('', include('envs.urls')),
+    path('', include('debugtalks.urls')),
+    path('', include('testsuites.urls')),
+    path('', include('reports.urls')),
+    path('', include('configures.urls')),
     path('', include('testcases.urls')),
-    path('api/', include('rest_framework.urls')),
-    path('user/', include('users.urls')),
 ]
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 # urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
