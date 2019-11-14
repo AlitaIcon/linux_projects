@@ -10,6 +10,7 @@ from rest_framework.validators import UniqueValidator
 
 from interfaces.models import Interfaces
 from projects.models import Projects
+from utils import validates
 
 
 class InterfaceModelSerializer(serializers.ModelSerializer):
@@ -76,3 +77,14 @@ class InterfaceNameSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Interfaces
 #         fields = ['url', 'interface_url', 'projects']
+class InterfaceRunSerializer(serializers.ModelSerializer):
+    """
+    通过接口来运行测试用例序列化器
+    """
+    env_id = serializers.IntegerField(write_only=True,
+                                      help_text='环境变量ID',
+                                      validators=[validates.whether_existed_env_id])
+
+    class Meta:
+        model = Interfaces
+        fields = ('id', 'env_id')

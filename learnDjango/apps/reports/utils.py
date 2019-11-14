@@ -15,7 +15,7 @@ def format_output(datas):
     data_list = []
     for item in datas:
         item['result'] = "Pass" if item['result'] else "Fail"
-        if not item["is_delete"]:
+        if not item.get("is_delete"):
             data_list.append(item)
 
     return data_list

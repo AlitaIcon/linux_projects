@@ -18,8 +18,8 @@ class RegisterSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(label='确认密码', help_text='确认密码',
                                              min_length=6, max_length=20,
                                              write_only=True, error_messages={
-                                                'min_length': '仅允许6-20位字符',
-                                                'max_length': '仅允许6-20位字符'})
+            'min_length': '仅允许6-20位字符',
+            'max_length': '仅允许6-20位字符'})
 
     token = serializers.CharField(label='生成token', read_only=True)
 
@@ -133,3 +133,15 @@ class UserSerializer(serializers.ModelSerializer):
                 'validators': [UniqueValidator(queryset=User.objects.all(), message="该邮箱已被注册")]
             },
         }
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('created_time', 'last_login')
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        date_joined = ret.pop('created_time')
+        ret['date_joined'] = date_joined
+        return ret

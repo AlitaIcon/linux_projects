@@ -239,3 +239,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')  # 注意此处�
 # 配置 MEDIA_URL 作为公用 URL，指向上传文件的基本路径
 MEDIA_URL = '/media/'
 REPORT_DIR = os.path.join(MEDIA_ROOT, 'reports')
+
+SUITES_DIR = os.path.join(BASE_DIR, 'suites')
+if not os.path.exists(SUITES_DIR):
+    os.mkdir(SUITES_DIR)

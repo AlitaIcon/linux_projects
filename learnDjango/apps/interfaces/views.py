@@ -1,17 +1,23 @@
 # Create your views here.
+import os
+from datetime import datetime
 
+from rest_framework import status
 from rest_framework.decorators import action
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
 from configures.models import Configures
+from envs.models import Envs
 from interfaces.models import Interfaces
-from interfaces.serializer import InterfaceModelSerializer, InterfaceNameSerializer
+from interfaces.serializer import InterfaceModelSerializer, InterfaceNameSerializer, InterfaceRunSerializer
 
 from interfaces.utils import get_count_by_project
+from learnDjango import settings
 from projects.serializer import ProjectNameSerializer
 from testcases.models import TestCases
+from utils import common
 
 
 class InterfaceViewSet(ModelViewSet):
@@ -80,7 +86,37 @@ class InterfaceViewSet(ModelViewSet):
         instance.is_delete = True
         instance.save()
 
+    @action(methods=['post'], detail=True)
+    def run(self, request, pk=None):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        datas = serializer.validated_data
+        env_id = datas.get('env_id')  # 获取环境变量env_id
+
+        # 创建测试用例所在目录名
+        testcase_dir_path = os.path.join(settings.SUITES_DIR,
+                                         datetime.strftime(datetime.now(), "%Y%m%d%H%M%S%f"))
+        if not os.path.exists(testcase_dir_path):
+            os.mkdir(testcase_dir_path)
+
+        env = Envs.objects.filter(id=env_id, is_delete=False).first()
+        testcase_objs = TestCases.objects.filter(is_delete=False, interface=instance)
+        if not testcase_objs.exists():  # 如果此接口下没有用例, 则无法运行
+            data_dict = {
+                "detail": "此接口下无用例, 无法运行!"
+            }
+            return Response(data_dict, status=status.HTTP_400_BAD_REQUEST)
+
+        for one_obj in testcase_objs:
+            common.generate_testcase_files(one_obj, env, testcase_dir_path)
+
+        # 运行用例
+        return common.run_testcase(instance, testcase_dir_path)
+
     def get_serializer_class(self):
         if self.action == "names":
             return ProjectNameSerializer
+        if self.action == "run":
+            return InterfaceRunSerializer
         return self.serializer_class

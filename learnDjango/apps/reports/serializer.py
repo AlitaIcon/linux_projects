@@ -4,16 +4,14 @@
 # @Author  : icon
 # @File    : serializer.py
 from _datetime import datetime
-
 from rest_framework import serializers
 from reports.models import Reports
 
 
 class ReportsModelSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Reports
-        exclude = ("update_time", )
+        exclude = ("update_time",)
         read_only_fields = ('create_time',)
         ordering = ("id", "name")
         extra_kwargs = {

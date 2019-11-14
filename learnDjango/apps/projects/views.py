@@ -1,16 +1,22 @@
 # Create your views here.
+import os
+from datetime import datetime
 
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from rest_framework.viewsets import ModelViewSet
 
+from envs.models import Envs
 from interfaces.models import Interfaces
 from interfaces.serializer import InterfaceInfoSerializer
+from learnDjango import settings
 from projects.models import Projects
-from projects.serializer import ProjectModelSerializer, ProjectNameSerializer
+from projects.serializer import ProjectModelSerializer, ProjectNameSerializer, ProjectsRunSerializer
 from projects.utils import get_count_by_project
+from testcases.models import TestCases
+from utils import common
 
 
 class ProjectsViewSet(ModelViewSet):
@@ -71,7 +77,46 @@ class ProjectsViewSet(ModelViewSet):
         res.data["results"] = get_count_by_project(res.data.get("results"))
         return res
 
+    @action(methods=['post'], detail=True)
+    def run(self, request, pk=None):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        datas = serializer.validated_data
+        env_id = datas.get('env_id')  # 获取环境变量env_id
+
+        # 创建测试用例所在目录名
+        testcase_dir_path = os.path.join(settings.SUITES_DIR,
+                                         datetime.strftime(datetime.now(), "%Y%m%d%H%M%S%f"))
+        if not os.path.exists(testcase_dir_path):
+            os.mkdir(testcase_dir_path)
+
+        env = Envs.objects.filter(id=env_id, is_delete=False).first()
+        interface_objs = Interfaces.objects.filter(is_delete=False, project=instance)
+
+        if not interface_objs.exists():  # 如果此项目下没有接口, 则无法运行
+            data_dict = {
+                "detail": "此项目下无接口, 无法运行!"
+            }
+            return Response(data_dict, status=status.HTTP_400_BAD_REQUEST)
+
+        for inter_obj in interface_objs:
+            testcase_objs = TestCases.objects.filter(is_delete=False, interface=inter_obj)
+
+            for one_obj in testcase_objs:
+                common.generate_testcase_files(one_obj, env, testcase_dir_path)
+
+        # 运行用例
+        return common.run_testcase(instance, testcase_dir_path)
+
     def get_serializer_class(self):
-        if self.action == "names":
+        """
+        不同的action选择不同的序列化器
+        :return:
+        """
+        if self.action == 'names':
             return ProjectNameSerializer
-        return self.serializer_class
+        elif self.action == 'run':
+            return ProjectsRunSerializer
+        else:
+            return self.serializer_class

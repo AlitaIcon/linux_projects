@@ -3,11 +3,6 @@
 # @Time    : 2019/11/6 21:06
 # @Author  : icon
 # @File    : utils.py
-import re
-
-from django.db.models import Count
-
-from testcases.models import TestCases
 from configures.models import Configures
 
 
@@ -26,3 +21,8 @@ def get_count_by_project(datas):
         data_list.append(item)
 
     return data_list
+
+
+
+
+

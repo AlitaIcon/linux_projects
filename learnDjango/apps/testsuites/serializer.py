@@ -8,6 +8,7 @@ from rest_framework import serializers
 
 from projects.models import Projects
 from testsuites.models import TestSuites
+from utils import validates
 
 
 class TestSuitesModelSerializer(serializers.ModelSerializer):
@@ -36,3 +37,16 @@ class TestSuitesNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestSuites
         fields = ("id", "name")
+
+
+class TestsSuitesRunSerializer(serializers.ModelSerializer):
+    """
+    通过套件来运行测试用例序列化器
+    """
+    env_id = serializers.IntegerField(write_only=True,
+                                      help_text='环境变量ID',
+                                      validators=[validates.whether_existed_env_id])
+
+    class Meta:
+        model = TestSuites
+        fields = ('id', 'env_id')
