@@ -58,8 +58,11 @@ class MyUser(AbstractBaseUser):
         verbose_name='手机号码',
         help_text='手机号码',
         max_length=11,
-        validators=[MinLengthValidator(11, message="手机号仅能为11位")],
-        unique=True,
+        # validators=[MinLengthValidator(11, message="手机号仅能为11位")],
+        # unique=True,
+        blank=True,
+        null=True,
+        default='17706120671'
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)

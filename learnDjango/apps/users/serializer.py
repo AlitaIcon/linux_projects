@@ -33,7 +33,7 @@ class RegisterSerializer(serializers.ModelSerializer):
                 'help_text': '手机号',
                 'min_length': 11,
                 'max_length': 11,
-                'validators': [UniqueValidator(queryset=User.objects.all(), message="该手机号已被注册")],
+                # 'validators': [UniqueValidator(queryset=User.objects.all(), message="该手机号已被注册")],
                 'error_messages': {
                     'min_length': '手机号仅能为11位',
                     'max_length': '手机号仅能为11位',
@@ -116,9 +116,9 @@ class UserSerializer(serializers.ModelSerializer):
                 'help_text': '手机号',
                 'min_length': 11,
                 'max_length': 11,
-                'validators': [UniqueValidator(queryset=User.objects.all(), message="该手机号已被注册"),
+                # 'validators': [UniqueValidator(queryset=User.objects.all(), message="该手机号已被注册"),
                                # MinLengthValidator(11, message="手机号仅能为11位")
-                               ],
+                               # ],
                 'error_messages': {
                     'min_length': '手机号仅能为11位',
                     'max_length': '手机号仅能为11位',
