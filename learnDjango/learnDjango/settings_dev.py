@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, "apps"))
 SECRET_KEY = 'ny3c^@mv-y2%y#9ee@g)lw+2sl13$y1i=hpbk(=vp=g!gr^_k^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True  # 允许跨域携带Cookie，默认为False
@@ -144,11 +144,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'httprunner',
-        'HOST': 'db',
-        # 'HOST': '49.235.177.249',
+        # 'HOST': 'db',
+        'HOST': '49.235.177.249',
         'USER': 'root',
         'PASSWORD': '123456',
-        'PORT': '3306'
+        'PORT': '3838'
     }
 }
 
@@ -238,7 +238,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "front_ends/static")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'front_ends/static/media').replace('\\', '/')  # 注意此处不要写成列表或元组的形式
 # 配置 MEDIA_URL 作为公用 URL，指向上传文件的基本路径
 MEDIA_URL = '/media/'
-REPORTS_DIR = os.path.join(BASE_DIR, 'reports')
+
 SUITES_DIR = os.path.join(BASE_DIR, 'suites')
 if not os.path.exists(SUITES_DIR):
     os.mkdir(SUITES_DIR)

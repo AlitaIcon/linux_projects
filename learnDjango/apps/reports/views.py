@@ -11,7 +11,6 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from learnDjango.settings import REPORT_DIR
 from reports.utils import format_output, get_file_contents
 from reports.models import Reports
 from reports.serializer import ReportsModelSerializer
@@ -90,8 +89,11 @@ class SummaryView(GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
+        user_data = UserInfoSerializer(request.user).data
+        user_data['role'] = '管理员' if request.user.is_admin else '普通用户'
+        user_data['username'] = request.user.username
         response = {
-            'user': UserInfoSerializer(request.user).data,
+            'user': user_data,
             'statistics': get_summary()
         }
         return Response(response)
