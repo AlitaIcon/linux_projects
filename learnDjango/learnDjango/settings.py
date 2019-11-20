@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, "apps"))
 SECRET_KEY = 'ny3c^@mv-y2%y#9ee@g)lw+2sl13$y1i=hpbk(=vp=g!gr^_k^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True  # 允许跨域携带Cookie，默认为False
@@ -144,11 +144,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'httprunner',
-        'HOST': 'db',
+        'HOST': '192.168.2.17',
         # 'HOST': '49.235.177.249',
         'USER': 'root',
         'PASSWORD': '123456',
-        'PORT': '3306'
+        'PORT': '3636'
     }
 }
 

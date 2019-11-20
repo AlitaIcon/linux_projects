@@ -18,10 +18,20 @@ class InterfacesAnotherSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Interfaces
-        fields = ('iid', 'pid', 'project', 'name')
+        fields = ('iid', 'name', 'project', 'pid')
         extra_kwargs = {
             'name': {"read_only": True},
         }
+
+    def validate(self, attrs):
+        """
+        校验项目ID是否与接口ID一致
+        :param attrs:
+        :return:
+        """
+        if not Interfaces.objects.filter(id=attrs['iid'], project_id=attrs['pid'], is_delete=False).exists():
+            raise serializers.ValidationError("项目和接口信息不对应!")
+        return attrs
 
 
 class ConfigureModelSerializer(serializers.ModelSerializer):
@@ -45,7 +55,7 @@ class ConfigureModelSerializer(serializers.ModelSerializer):
         if 'interface' in validated_data:
             interface_dict = validated_data.pop('interface')
             validated_data['interface_id'] = interface_dict['iid']
-        return super().update(**validated_data)
+        return super().update(instance, validated_data)
 
 
 class ConfiguresNameSerializer(serializers.ModelSerializer):
