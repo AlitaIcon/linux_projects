@@ -144,11 +144,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'httprunner',
-        'HOST': '192.168.2.17',
+        'HOST': 'db',
+        # 'HOST': '192.168.2.17',
         # 'HOST': '49.235.177.249',
         'USER': 'root',
         'PASSWORD': '123456',
-        'PORT': '3636'
+        # 'PORT': '3636',
+        'PORT': '3306'
     }
 }
 
